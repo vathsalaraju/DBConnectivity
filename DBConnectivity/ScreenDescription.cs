@@ -72,7 +72,7 @@ namespace DBConnectivity
             System.Console.WriteLine("===========================================");
             System.Console.WriteLine("You are in Admin Screen");
             System.Console.WriteLine("===========================================");
-            System.Console.WriteLine("Enter your choice \n1. Show all students details \n2. show all current student enrollement\n3. Introduce new course\n4. show all courses\n");
+            System.Console.WriteLine("Enter your choice \n1. Show all students details \n2. show all  student enrollment\n3. Introduce new course\n4. show all courses\n");
             int choice = Convert.ToInt32(Console.ReadLine());
             switch (choice)
             {
@@ -98,8 +98,10 @@ namespace DBConnectivity
 
         public void showAllEnrollment()
         {
+            List<Enroll> e = new List<Enroll>();
+            e = en.listOfEnrollments();
             
-            if (en.listOfEnrollments().Count() != 0)
+            if (e.Count() != 0)
             {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("Displaying Enrollment Details");
@@ -108,7 +110,7 @@ namespace DBConnectivity
                 Console.WriteLine("Student id\t Student Name \t Course Id \t Course Name \t Course Fee \t Course Duration \t Enrollment Date");
                 Console.WriteLine("==================================================================================================");
 
-                foreach (Enroll enr in en.listOfEnrollments())
+                foreach (Enroll enr in e)
                 {
                     info.Display(enr);
                 }
@@ -122,8 +124,10 @@ namespace DBConnectivity
 
         public void showAllStudentScreen()
         {
+           List<Student> s = new List<Student>();
+            s = en.listOfStudents();
             
-            if (en.listOfStudents().Count() != 0) {
+            if (s.Count() != 0) {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("Displaying All Student Details");
                 System.Console.WriteLine("===========================================\n\n");
@@ -132,7 +136,7 @@ namespace DBConnectivity
                 Console.WriteLine("==================================================================================");
 
 
-                foreach (Student student in en.listOfStudents())
+                foreach (Student student in s)
                 {
                     Info.Display(student);
                 }
@@ -143,8 +147,10 @@ namespace DBConnectivity
 
         public void showAllCoursesScreen()
         {
+            List <Course> c = en.listOfCourses();
+
             
-            if (en.listOfCourses().Count != 0)
+            if (c.Count != 0)
             {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("you are in Show all Courses Screen");
@@ -154,7 +160,7 @@ namespace DBConnectivity
                 Console.WriteLine("==================================================================================");
 
 
-                foreach (Course course in en.listOfCourses())
+                foreach (Course course in c)
                 {
                     info.Display(course);
                 }
@@ -252,12 +258,26 @@ namespace DBConnectivity
             Console.WriteLine("==================================================================================");
             Console.WriteLine("ID\tName\tDate of Birth");
             Console.WriteLine("==================================================================================");
-
-            foreach (Enroll en in en.listOfEnrollments())
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
             {
-                if (en.Student.Id == id)
-                    info.Display(en);
+                using (SqlCommand cmd = new SqlCommand("select * from enrollcourse where sid = @id", conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Enroll en = new Enroll();
+                            en.Student.Id = (string)reader["sid"];
+                            en.Course.Id = (string)reader["cid"];
+                            en.EnrollmentDate = reader["enrollmentDate"].ToString();
+                            Console.WriteLine(en.Student.Id+"\t"+en.Course.Id+"\t"+en.EnrollmentDate);
+                        }
+                    }
+                }
             }
+
             
         }
 

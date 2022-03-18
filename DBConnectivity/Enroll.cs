@@ -35,70 +35,78 @@ namespace DBConnectivity
 
         public List<Enroll> listOfEnrollments()
         {
-            string connectstr = ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString;
-            SqlConnection conn = new SqlConnection(connectstr);
-            conn.Open();
-
-            SqlCommand command = new SqlCommand("select * from enrollcourse", conn);
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            using(SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
             {
-                Enroll e1 = new Enroll();
-                string sid = (string)reader["sid"];
-                string cid = (string)reader["cid"];
-                e1.EnrollmentDate = reader["enrollmentdate"].ToString();
-                e1.Student = getStudentByid(sid);
-                e1.Course = getCourseByid(cid);
-                enrollList.Add(e1);
+                using (SqlCommand cmd = new SqlCommand("select * from enrollcourse", conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Enroll e1 = new Enroll();
+                            string sid = (string)reader["sid"];
+                            string cid = (string)reader["cid"];
+                            e1.EnrollmentDate = reader["enrollmentdate"].ToString();
+                            e1.Student = getStudentByid(sid);
+                            e1.Course = getCourseByid(cid);
+                            enrollList.Add(e1);
 
-            }
+                        }
+                    }
 
-           
-            return listOfEnrollments();
+                }
+            }           
+            return enrollList;
         }
 
 
         public List<Course> listOfCourses()
         {
-            string connectstr = ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString;
-            SqlConnection conn = new SqlConnection(connectstr);
-            conn.Open();
 
-            SqlCommand command = new SqlCommand("SELECT * FROM course", conn);
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
             {
-                Course c;
-
-                if ((bool)reader["isDegree"])
+                using (SqlCommand cmd = new SqlCommand("select * from course", conn))
                 {
-                    DegreeCourse dc = new DegreeCourse();
-                    dc.Id = (string)reader["id"];
-                    dc.Name = (string)reader["name"];
-                    dc.SeatsAvailable = (int)reader["seatsAvailable"];
-                    dc.Fee = (float)(decimal)reader["fee"];
-                    dc.Duration = (string)reader["Duration"];
-                    if ((string)reader["degreelevel"] == "BACHELORS")
-                        dc.level = DegreeCourse.Level.BACHELORS;
-                    else
-                        dc.level = DegreeCourse.Level.MASTERS;
-                    dc.isPlacementAvailable = (bool)reader["isPlacementAvailable"];
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Course c;
 
-                    courseList.Add(dc);
-                }
-                else
-                {
-                    DiplomaCourse dpc = new DiplomaCourse();
-                    dpc.Id = (string)reader["id"];
-                    dpc.Name = (string)reader["name"];
-                    dpc.SeatsAvailable = (int)reader["seatsAvailable"];
-                    dpc.Fee = (float)reader["fee"];
-                    dpc.Duration = (string)reader["Duration"];
-                    if ((string)reader["DiplomaType"] == "PROFESSIONAL")
-                        dpc.type = DiplomaCourse.Type.PROFESSIONAL;
-                    else
-                        dpc.type = DiplomaCourse.Type.ACADEMIC;
-                    courseList.Add(dpc);
+                            if ((bool)reader["isDegree"])
+                            {
+                                DegreeCourse dc = new DegreeCourse();
+                                dc.Id = (string)reader["id"];
+                                dc.Name = (string)reader["name"];
+                                dc.SeatsAvailable = (int)reader["seatsAvailable"];
+                                dc.Fee = (float)(decimal)reader["fee"];
+                                dc.Duration = (string)reader["Duration"];
+                                if ((string)reader["degreelevel"] == "BACHELORS")
+                                    dc.level = DegreeCourse.Level.BACHELORS;
+                                else
+                                    dc.level = DegreeCourse.Level.MASTERS;
+                                dc.isPlacementAvailable = (bool)reader["isPlacementAvailable"];
+
+                                courseList.Add(dc);
+                            }
+                            else
+                            {
+                                DiplomaCourse dpc = new DiplomaCourse();
+                                dpc.Id = (string)reader["id"];
+                                dpc.Name = (string)reader["name"];
+                                dpc.SeatsAvailable = (int)reader["seatsAvailable"];
+                                dpc.Fee = (float)reader["fee"];
+                                dpc.Duration = (string)reader["Duration"];
+                                if ((string)reader["DiplomaType"] == "PROFESSIONAL")
+                                    dpc.type = DiplomaCourse.Type.PROFESSIONAL;
+                                else
+                                    dpc.type = DiplomaCourse.Type.ACADEMIC;
+                                courseList.Add(dpc);
+                            }
+                        }
+                    }
                 }
             }
             
@@ -107,18 +115,25 @@ namespace DBConnectivity
 
         public List<Student> listOfStudents()
         {
-            string connectstr = ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString;
-            SqlConnection conn = new SqlConnection(connectstr);
-            conn.Open();
-            SqlCommand command = new SqlCommand("SELECT * FROM student", conn);
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
             {
-                Student student = new Student();
-                student.Id = (string)reader["id"];
-                student.Name = (string)reader["name"];
-                student.Date = reader["DOB"].ToString();
-                studentList.Add(student);
+                using (SqlCommand cmd = new SqlCommand("select * from student", conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            Student student = new Student();
+                            student.Id = (string)reader["id"];
+                            student.Name = (string)reader["name"];
+                            student.Date = reader["DOB"].ToString();
+                            studentList.Add(student);
+                        }
+                    }
+                }
             }
             return studentList;
         }
