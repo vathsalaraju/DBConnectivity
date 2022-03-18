@@ -14,7 +14,7 @@ namespace DBConnectivity
         public DiplomaCourse(string id, string name, string duration, float fee,int seatsAvailable,bool isDegree, Type type) : base(id, name, duration, fee,seatsAvailable, isDegree)
         {
             this.type = type;
-            this.IsDegree = true;
+            this.IsDegree = false;
         }
 
         public override double calculateMonthlyFees()

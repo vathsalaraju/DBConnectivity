@@ -50,8 +50,8 @@ namespace DBConnectivity
                             e1.EnrollmentDate = reader["enrollmentdate"].ToString();
                             e1.Student = getStudentByid(sid);
                             e1.Course = getCourseByid(cid);
-                            enrollList.Add(e1);
-
+                            if(!enrollList.Contains(e1))
+                                enrollList.Add(e1);
                         }
                     }
 
@@ -88,8 +88,8 @@ namespace DBConnectivity
                                 else
                                     dc.level = DegreeCourse.Level.MASTERS;
                                 dc.isPlacementAvailable = (bool)reader["isPlacementAvailable"];
-
-                                courseList.Add(dc);
+                                if(!courseList.Contains(dc))
+                                    courseList.Add(dc);
                             }
                             else
                             {
@@ -103,7 +103,8 @@ namespace DBConnectivity
                                     dpc.type = DiplomaCourse.Type.PROFESSIONAL;
                                 else
                                     dpc.type = DiplomaCourse.Type.ACADEMIC;
-                                courseList.Add(dpc);
+                                if (!courseList.Contains(dpc))
+                                    courseList.Add(dpc);
                             }
                         }
                     }
@@ -130,7 +131,8 @@ namespace DBConnectivity
                             student.Id = (string)reader["id"];
                             student.Name = (string)reader["name"];
                             student.Date = reader["DOB"].ToString();
-                            studentList.Add(student);
+                            if(!studentList.Contains(student))
+                                studentList.Add(student);
                         }
                     }
                 }

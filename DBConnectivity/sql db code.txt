@@ -1,0 +1,25 @@
+Create database StudentManagement
+
+use StudentManagement
+
+
+create table student (id varchar(20) primary key, name varchar(20), DOB date);
+
+create table course(id varchar(20) primary key, name varchar(20), duration varchar(20),
+fee numeric(10,2), seatsAvailable int, isDegree bit, degreelevel varchar(20),
+isPlacementavailable bit, DiplomaType varchar(20), monthlyFee numeric(10,2))
+
+create table enrollcourse(sid varchar(20), cid varchar(20), enrolldate date, primary key(sid,cid), 
+foreign key(sid) references student(id), foreign key(cid) references course(id))
+
+create proc insertEnroll(@sid varchar(20), @cid varchar(20), @enrollmentdate date)
+as
+begin 
+insert into enrollcourse values(@sid,@cid,@enrollmentdate)
+end
+
+create proc insertStudent(@id varchar(20), @name varchar(20), @DOB date)
+as
+begin
+insert into student values(@id,@name,@DOB)
+end 

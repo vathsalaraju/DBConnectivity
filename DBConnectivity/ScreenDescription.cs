@@ -37,17 +37,18 @@ namespace DBConnectivity
             string type = Console.ReadLine();
             if (type == "Degree")
             {
+                
                 System.Console.WriteLine("Enter degree type - Bachelors/Masters");
                 string dType = Console.ReadLine();
                 System.Console.WriteLine("Is placement Available True/False");
                 bool placement = Convert.ToBoolean(Console.ReadLine());
                 if (dType == "Bachelors")
                 {
-                    app.introduce(new DegreeCourse(courseId, courseName, duration, courseFee, seats, placement, true, DegreeCourse.Level.BACHELORS));
+                    app.introduce(new DegreeCourse(courseId, courseName, duration, courseFee, seats, true, placement, DegreeCourse.Level.BACHELORS));
                 }
                 else
                 {
-                    app.introduce(new DegreeCourse(courseId, courseName, duration, courseFee, seats, placement, true, DegreeCourse.Level.MASTERS));
+                    app.introduce(new DegreeCourse(courseId, courseName, duration, courseFee, seats, true,placement, DegreeCourse.Level.MASTERS));
                 }
             }
             else
@@ -150,7 +151,7 @@ namespace DBConnectivity
             List <Course> c = en.listOfCourses();
 
             
-            if (c.Count != 0)
+            if (c.Count() != 0)
             {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("you are in Show all Courses Screen");
@@ -256,23 +257,24 @@ namespace DBConnectivity
         {
             
             Console.WriteLine("==================================================================================");
-            Console.WriteLine("ID\tName\tDate of Birth");
+            Console.WriteLine("Student ID\t Course ID \t Date of Birth");
             Console.WriteLine("==================================================================================");
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("select * from enrollcourse where sid = @id", conn))
+                using (SqlCommand cmd = new SqlCommand("select * from enrollcourse where sid = @sid;", conn))
                 {
                     conn.Open();
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@sid", id);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            Enroll en = new Enroll();
-                            en.Student.Id = (string)reader["sid"];
-                            en.Course.Id = (string)reader["cid"];
-                            en.EnrollmentDate = reader["enrollmentDate"].ToString();
-                            Console.WriteLine(en.Student.Id+"\t"+en.Course.Id+"\t"+en.EnrollmentDate);
+                            Console.WriteLine((string)reader["sid"] +"\t"+(string)reader["cid"]+"\t"+reader["enrollmentdate"].ToString());
+                            //Enroll en = new Enroll();
+                            //en.Student.Id = (string)reader["sid"];
+                            //en.Course.Id = (string)reader["cid"];
+                            //en.EnrollmentDate = reader["enrollmentdate"].ToString();
+                            //Console.WriteLine(en.Student.Id+"\t"+en.Course.Id+"\t"+en.EnrollmentDate);
                         }
                     }
                 }
@@ -285,6 +287,8 @@ namespace DBConnectivity
         {
             try
             {
+                List<Course> courses = new List<Course>();
+                courses = en.listOfCourses();
                 
                 Student stud = new Student();
                 System.Console.WriteLine("Enter student id");
@@ -298,7 +302,7 @@ namespace DBConnectivity
                         stud.Date = s.Date;
                     }
                 }
-                foreach(Course c in en.listOfCourses())
+                foreach(Course c in courses)
                 {
                     info.Display(c);
                 }
@@ -334,11 +338,9 @@ namespace DBConnectivity
                             c1.SeatsAvailable = c.SeatsAvailable;
                             c1.IsDegree = c.IsDegree;
                         }
-                        
-                            app.enroll(stud, c1, enrollDate);
-                     
-             
-                    }
+
+                        app.enroll(stud, c1, enrollDate);                
+                       }
                 }
             }
             catch (FormatException e)

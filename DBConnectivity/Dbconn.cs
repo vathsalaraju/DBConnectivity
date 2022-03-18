@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 
@@ -32,12 +33,14 @@ namespace DBConnectivity
             {
                 using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("insert into enrollcourse(sid,cid,enrollmentdate) values(@sid,@cid,@enrollmentdate)", conn))
+                    using (SqlCommand cmd = new SqlCommand("insertEnroll", conn))
                     {
                         conn.Open();
-                        cmd.Parameters.AddWithValue("@sid", e.Student.Id);
-                        cmd.Parameters.AddWithValue("@cid", e.Course.Id);
-                        cmd.Parameters.AddWithValue("@enrollmentdate", e.EnrollmentDate);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@sid", SqlDbType.NVarChar).Value = e.Student.Id;
+                        cmd.Parameters.AddWithValue("@cid", SqlDbType.NVarChar).Value = e.Course.Id;
+                        cmd.Parameters.AddWithValue("@enrollmentdate", SqlDbType.Date).Value = e.EnrollmentDate;
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
                             Console.WriteLine("Successfully inserted");
@@ -79,12 +82,13 @@ namespace DBConnectivity
 
                 using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("insert into student(id,name,DOB) values(@id,@name,@dob)", conn))
+                    using (SqlCommand cmd = new SqlCommand("insertStudent", conn))
                     {
                         conn.Open();
-                        cmd.Parameters.AddWithValue("@id", student.Id);
-                        cmd.Parameters.AddWithValue("@name", student.Name);
-                        cmd.Parameters.AddWithValue("@dob", student.Date);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id", SqlDbType.NVarChar).Value = student.Id;
+                        cmd.Parameters.AddWithValue("@name", SqlDbType.NVarChar).Value = student.Name;
+                        cmd.Parameters.AddWithValue("@dob", SqlDbType.Date).Value = student.Date;
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
                             Console.WriteLine("Successfully inserted");
@@ -139,7 +143,7 @@ namespace DBConnectivity
                             cmd.Parameters.AddWithValue("@isdegree", isDegree);
                             cmd.Parameters.AddWithValue("@degreelevel", level);
                             cmd.Parameters.AddWithValue("@isPlacementAvailable", isplacementavailable);
-                            cmd.Parameters.AddWithValue("@monthlyfee", montlyfee);
+                            cmd.Parameters.AddWithValue("@monthlyfee", dc.calculateMonthlyFees());
                         }
                         else
                         {
