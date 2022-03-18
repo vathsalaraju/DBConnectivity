@@ -21,10 +21,10 @@ namespace DBConnectivity
         {
             if(type == Type.PROFESSIONAL)
             {
-                return (double) ((0.1*Fee)+Fee);
+                return (double) ((0.1*this.Fee)+this.Fee);
             }
             else
-            return (double) ((0.05*Fee)+Fee);
+            return (double) ((0.05*this.Fee)+this.Fee);
         }
 
     }

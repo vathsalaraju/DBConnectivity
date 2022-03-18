@@ -129,11 +129,12 @@ namespace DBConnectivity
                             isDegree = 1;
                             DegreeCourse dc = new DegreeCourse();
                             level = dc.level.ToString();
+                            dc.Fee = course.Fee;
                             if (dc.isPlacementAvailable)
                                 isplacementavailable = 1;
                             else
                                 isplacementavailable = 0;
-                            montlyfee = dc.calculateMonthlyFees();
+                            
 
                             cmd.Parameters.AddWithValue("@id", course.Id);
                             cmd.Parameters.AddWithValue("@name", course.Name);
@@ -149,7 +150,8 @@ namespace DBConnectivity
                         {
                             DiplomaCourse dpc = new DiplomaCourse();
                             type = dpc.type.ToString();
-                            montlyfee = dpc.calculateMonthlyFees();
+                            dpc.Fee = course.Fee;
+                            
                             cmd = new SqlCommand("insert into course(id,name,duration,fee,seatsAvailable,isDegree, DiplomaType,monthlyfee) values(@id,@name,@duration,@fee,@seatsAvailable,@isdegree,@diplomatype,@monthlyfee)", conn);
                             cmd.Parameters.AddWithValue("@id", course.Id);
                             cmd.Parameters.AddWithValue("@name", course.Name);
@@ -157,7 +159,7 @@ namespace DBConnectivity
                             cmd.Parameters.AddWithValue("@fee", course.Fee);
                             cmd.Parameters.AddWithValue("@seatsAvailable", course.SeatsAvailable);
                             cmd.Parameters.AddWithValue("@isdegree", isDegree);
-                            cmd.Parameters.AddWithValue("@monthlyfee", montlyfee);
+                            cmd.Parameters.AddWithValue("@monthlyfee", dpc.calculateMonthlyFees());
                             cmd.Parameters.AddWithValue("@diplomatype", type);
                         }
 
