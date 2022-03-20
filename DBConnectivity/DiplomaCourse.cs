@@ -1,6 +1,6 @@
 namespace DBConnectivity
 {
-    class DiplomaCourse:Course
+    public class DiplomaCourse:Course
     {   
         public enum Type {
             PROFESSIONAL,

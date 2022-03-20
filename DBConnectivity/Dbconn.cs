@@ -9,8 +9,6 @@ using System.Configuration;
 
 namespace DBConnectivity
 {
-
-
     public class InMemoryAppEngine// : AppEngine
 
     {
@@ -22,13 +20,11 @@ namespace DBConnectivity
 
         public InMemoryAppEngine()
         {
-            //string connectstr = ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString;
-            //SqlConnection conn = new SqlConnection(connectstr);
-            //conn.Open();
         }
         public void enroll(Student student, Course course, DateTime enrollmentDate)
         {
             Enroll e = new Enroll(student, course, enrollmentDate);
+            int result = 0;
             try
             {
                 using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
@@ -37,12 +33,13 @@ namespace DBConnectivity
                     {
                         conn.Open();
                         cmd.CommandType = CommandType.StoredProcedure;
-
+                        checkNumberOfEnrollments(student.Id);
+                        checkIfExists(student.Id, course.Id);
                         cmd.Parameters.AddWithValue("@sid", SqlDbType.NVarChar).Value = e.Student.Id;
                         cmd.Parameters.AddWithValue("@cid", SqlDbType.NVarChar).Value = e.Course.Id;
                         cmd.Parameters.AddWithValue("@enrollmentdate", SqlDbType.Date).Value = e.EnrollmentDate;
-                        int result = cmd.ExecuteNonQuery();
-                        if (result > 0)
+                        result = cmd.ExecuteNonQuery();
+                        if(result>0)
                             Console.WriteLine("Successfully inserted");
                     }
                 }
@@ -50,30 +47,72 @@ namespace DBConnectivity
             catch (SqlException e1)
             {
                 Console.WriteLine(e1.Message);
+                return;
+                
             }
             catch (Exception e1)
             {
                 Console.WriteLine(e1.Message);
+                return;
+                
             }
-
-            foreach (Enroll en in e.listOfEnrollments())
-            {
-                if (en.Student.Id == student.Id && en.Course.Id == course.Id)
-                    throw new NoRepeatEnrollmentException("you have already registered for the course");
-            }
-
-            foreach (Enroll en in e.listOfEnrollments())
-            {
-                if (en.Student.Id == student.Id)
-                    count++;
-            }
-            if (count > 4)
-                throw new LimitRegistrationException("You have exceeded the number of registration");
             e.enrollList.Add(e);
         }
+
+        public void checkNumberOfEnrollments(string id)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("select count(*) from enrollcourse where sid = @id", conn))
+                    {
+                        conn.Open();
+                        cmd.Parameters.AddWithValue("@id", id);
+                        int result = Convert.ToInt32(cmd.ExecuteScalar());
+                        Console.WriteLine(result);
+                        if (result > 4)
+                        {
+                            throw new LimitRegistrationException("you have exceeded the maximum enrollments");
+                        }
+
+                    }
+                }
+            }
+            catch(LimitRegistrationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void checkIfExists(string sid,string cid)
+        {
+            int result = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionstr"].ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("select count(*) from enrollcourse where sid = @sid and cid = @cid", conn))
+                    {
+                        conn.Open();
+                        cmd.Parameters.AddWithValue("@sid", sid);
+                        cmd.Parameters.AddWithValue("@cid", cid);
+                        result = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (result > 0)
+                        {
+                            throw new NoRepeatEnrollmentException("you have already registered for the course");
+                        }
+
+                    }
+                }
+            }
+            catch(NoRepeatEnrollmentException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+        }
     
-
-
         public void register(Student student)
         {
             try

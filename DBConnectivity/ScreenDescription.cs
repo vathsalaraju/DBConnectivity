@@ -255,7 +255,6 @@ namespace DBConnectivity
         
         public void showSpecificStudentEnrollment(string id)
         {
-            
             Console.WriteLine("==================================================================================");
             Console.WriteLine("Student ID\t Course ID \t Date of Birth");
             Console.WriteLine("==================================================================================");
@@ -279,8 +278,6 @@ namespace DBConnectivity
                     }
                 }
             }
-
-            
         }
 
         public void AddEnrollmentScreen()
@@ -289,17 +286,20 @@ namespace DBConnectivity
             {
                 List<Course> courses = new List<Course>();
                 courses = en.listOfCourses();
+                List<Student> students = new List<Student>();
+                students = en.listOfStudents();
                 
                 Student stud = new Student();
                 System.Console.WriteLine("Enter student id");
                 string id = Console.ReadLine();
-                foreach (Student s in en.listOfStudents())
+                foreach (Student s in students)
                 {
                     if (s.Id == id)
                     {
                         stud.Id = s.Id;
                         stud.Name = s.Name;
                         stud.Date = s.Date;
+                        break;
                     }
                 }
                 foreach(Course c in courses)
@@ -312,34 +312,44 @@ namespace DBConnectivity
                 string cour = Console.ReadLine();
                 System.Console.WriteLine("Enter enrollment date");
                 DateTime enrollDate = DateTime.Parse(Console.ReadLine());
-                Course c1;
+                DegreeCourse dc;
+                DiplomaCourse dpc;
                 foreach (Course c in en.listOfCourses())
                 {
                     if (cour == (string)c.Id)
                     {
 
-                        if (c.IsDegree == true)
+                        if (c.GetType() == typeof(DegreeCourse))
                         {
-                            c1 = new DegreeCourse();
-                            c1.Id = c.Id;
-                            c1.Id = c.Id;
-                            c1.Name = c.Name;
-                            c1.Duration = c.Duration;
-                            c1.Fee = c.Fee;
-                            c1.SeatsAvailable = c.SeatsAvailable;
+                            DegreeCourse d = (DegreeCourse)c;
+                            dc = new DegreeCourse();
+                            dc.Id = c.Id;
+                            dc.Name = c.Name;
+                            dc.Duration = c.Duration;
+                            dc.Fee = c.Fee;
+                            dc.SeatsAvailable = c.SeatsAvailable;
+                            dc.IsDegree = c.IsDegree;
+                            dc.level = d.level;
+                            dc.isPlacementAvailable = d.isPlacementAvailable;
+                            app.enroll(stud, dc, enrollDate);
+
                         }
                         else
-                        {
-                            c1 = new DiplomaCourse();
-                            c1.Id = c.Id;
-                            c1.Name = c.Name;
-                            c1.Duration = c.Duration;
-                            c1.Fee = c.Fee;
-                            c1.SeatsAvailable = c.SeatsAvailable;
-                            c1.IsDegree = c.IsDegree;
-                        }
 
-                        app.enroll(stud, c1, enrollDate);                
+                        {
+                            DiplomaCourse d = (DiplomaCourse)c;
+                            dpc = new DiplomaCourse();
+                            dpc.Id = c.Id;
+                            dpc.Name = c.Name;
+                            dpc.Duration = c.Duration;
+                            dpc.Fee = c.Fee;
+                            dpc.SeatsAvailable = c.SeatsAvailable;
+                            dpc.IsDegree = c.IsDegree;
+                            dpc.type = d.type;
+
+                            app.enroll(stud, dpc, enrollDate);
+                        }
+                                        
                        }
                 }
             }

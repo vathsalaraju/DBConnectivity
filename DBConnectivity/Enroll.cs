@@ -50,7 +50,8 @@ namespace DBConnectivity
                             e1.EnrollmentDate = reader["enrollmentdate"].ToString();
                             e1.Student = getStudentByid(sid);
                             e1.Course = getCourseByid(cid);
-                            if(!enrollList.Contains(e1))
+                            int index = enrollList.FindIndex(e => e.Student.Id == sid && e.Course.Id == cid);
+                            if(index<0)
                                 enrollList.Add(e1);
                         }
                     }
@@ -88,7 +89,8 @@ namespace DBConnectivity
                                 else
                                     dc.level = DegreeCourse.Level.MASTERS;
                                 dc.isPlacementAvailable = (bool)reader["isPlacementAvailable"];
-                                if(!courseList.Contains(dc))
+                                int index = courseList.FindIndex(c => c.Id == dc.Id);
+                                if (index < 0)
                                     courseList.Add(dc);
                             }
                             else
@@ -97,13 +99,14 @@ namespace DBConnectivity
                                 dpc.Id = (string)reader["id"];
                                 dpc.Name = (string)reader["name"];
                                 dpc.SeatsAvailable = (int)reader["seatsAvailable"];
-                                dpc.Fee = (float)reader["fee"];
+                                dpc.Fee = (float)(decimal)reader["fee"];
                                 dpc.Duration = (string)reader["Duration"];
                                 if ((string)reader["DiplomaType"] == "PROFESSIONAL")
                                     dpc.type = DiplomaCourse.Type.PROFESSIONAL;
                                 else
                                     dpc.type = DiplomaCourse.Type.ACADEMIC;
-                                if (!courseList.Contains(dpc))
+                                int index = courseList.FindIndex(c => c.Id == dpc.Id);
+                                if(index<0)
                                     courseList.Add(dpc);
                             }
                         }
@@ -131,7 +134,8 @@ namespace DBConnectivity
                             student.Id = (string)reader["id"];
                             student.Name = (string)reader["name"];
                             student.Date = reader["DOB"].ToString();
-                            if(!studentList.Contains(student))
+                            int index = studentList.FindIndex(s => s.Id == student.Id);
+                            if(index<0)
                                 studentList.Add(student);
                         }
                     }
