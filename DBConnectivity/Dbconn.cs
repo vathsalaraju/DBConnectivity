@@ -21,6 +21,8 @@ namespace DBConnectivity
         public InMemoryAppEngine()
         {
         }
+        
+        #region Enroll Details
         public void enroll(Student student, Course course, DateTime enrollmentDate)
         {
             Enroll e = new Enroll(student, course, enrollmentDate);
@@ -112,7 +114,9 @@ namespace DBConnectivity
             }
 
         }
-    
+    #endregion
+        
+        #region Student 
         public void register(Student student)
         {
             try
@@ -145,7 +149,9 @@ namespace DBConnectivity
             
 
         }
+        #endregion
 
+        #region Course    
         public void introduce(Course course)
         {
             SqlCommand cmd;
@@ -219,6 +225,7 @@ namespace DBConnectivity
             
 
         }
+        #endregion
                         
     }
 }
