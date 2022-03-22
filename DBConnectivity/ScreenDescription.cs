@@ -348,6 +348,7 @@ namespace DBConnectivity
                 Console.WriteLine(e.Message);
             }
             catch (Exception e)
+
             {
                 Console.WriteLine(e.Message);
             }
