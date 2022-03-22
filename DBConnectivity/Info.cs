@@ -10,7 +10,6 @@ namespace DBConnectivity
     {
         public static void Display(Student student)
         {
-
             Console.WriteLine("Student ID : "+student.Id + "\tStudentName : " + student.Name + "\tDate of Birth : " + student.Date);
         }
 
@@ -21,9 +20,7 @@ namespace DBConnectivity
 
         public void Display(Enroll enroll)
         {
-
             Console.WriteLine("Student ID : "+enroll.Student.Id+"\tStudent Name : "+enroll.Student.Name+"\tCourse ID : "+enroll.Course.Id+"\t Course Name : "+enroll.Course.Name+"\tDuration : "+enroll.Course.Duration+"\tEnrollment Date : "+enroll.EnrollmentDate);
-            
         }
 
     }
