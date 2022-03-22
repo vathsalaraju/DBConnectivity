@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,18 +11,18 @@ namespace DBConnectivity
         public static void Display(Student student)
         {
 
-            Console.WriteLine(student.Id + "\t" + student.Name + "\t" + student.Date);
+            Console.WriteLine("Student ID : "+student.Id + "\tStudentName : " + student.Name + "\tDate of Birth : " + student.Date);
         }
 
         public void Display(Course course)
         {
-            Console.WriteLine(course.Id + "\t" + course.Name + "\t" + course.Fee + "\t" + course.Duration + "\t\t" + course.calculateMonthlyFees()+"\t\t"+course.SeatsAvailable);
+            Console.WriteLine("Course ID : "+course.Id + "\tCourse Name : " + course.Name + "\tCourse Fee : " + course.Fee + "\t Duration : " + course.Duration + "\tMonthlyFee : " + course.calculateMonthlyFees()+"\t Seats Available : "+course.SeatsAvailable);
         }
 
         public void Display(Enroll enroll)
         {
 
-            Console.WriteLine(enroll.Student.Id+"\t\t"+enroll.Student.Name+"\t"+enroll.Course.Id+"\t\t"+enroll.Course.Name+"\t"+enroll.Course.Fee+"\t\t"+enroll.Course.Duration+"\t"+enroll.EnrollmentDate);
+            Console.WriteLine("Student ID : "+enroll.Student.Id+"\tStudent Name : "+enroll.Student.Name+"\tCourse ID : "+enroll.Course.Id+"\t Course Name : "+enroll.Course.Name+"\tDuration : "+enroll.Course.Duration+"\tEnrollment Date : "+enroll.EnrollmentDate);
             
         }
 
