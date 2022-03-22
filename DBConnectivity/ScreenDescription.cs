@@ -100,17 +100,14 @@ namespace DBConnectivity
         public void showAllEnrollment()
         {
             List<Enroll> e = new List<Enroll>();
-            e = en.listOfEnrollments();
+            e = app.listOfEnrollments();
             
             if (e.Count() != 0)
             {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("Displaying Enrollment Details");
                 System.Console.WriteLine("===========================================\n\n");
-                Console.WriteLine("==================================================================================================");
-                Console.WriteLine("Student id\t Student Name \t Course Id \t Course Name \t Course Fee \t Course Duration \t Enrollment Date");
-                Console.WriteLine("==================================================================================================");
-
+                
                 foreach (Enroll enr in e)
                 {
                     info.Display(enr);
@@ -126,16 +123,13 @@ namespace DBConnectivity
         public void showAllStudentScreen()
         {
            List<Student> s = new List<Student>();
-            s = en.listOfStudents();
+            s = app.listOfStudents();
             
             if (s.Count() != 0) {
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("Displaying All Student Details");
                 System.Console.WriteLine("===========================================\n\n");
-                Console.WriteLine("==================================================================================");
-                Console.WriteLine("ID\tName\tDate of Birth");
-                Console.WriteLine("==================================================================================");
-
+                
 
                 foreach (Student student in s)
                 {
@@ -148,7 +142,7 @@ namespace DBConnectivity
 
         public void showAllCoursesScreen()
         {
-            List <Course> c = en.listOfCourses();
+            List <Course> c = app.listOfCourses();
 
             
             if (c.Count() != 0)
@@ -156,11 +150,7 @@ namespace DBConnectivity
                 System.Console.WriteLine("===========================================");
                 System.Console.WriteLine("you are in Show all Courses Screen");
                 System.Console.WriteLine("===========================================\n\n");
-                Console.WriteLine("==================================================================================");
-                Console.WriteLine("ID\tNAME\tFees\tDuration\t Monthlyfee\t Seats Available");
-                Console.WriteLine("==================================================================================");
-
-
+                
                 foreach (Course course in c)
                 {
                     info.Display(course);
@@ -285,9 +275,9 @@ namespace DBConnectivity
             try
             {
                 List<Course> courses = new List<Course>();
-                courses = en.listOfCourses();
+                courses = app.listOfCourses();
                 List<Student> students = new List<Student>();
-                students = en.listOfStudents();
+                students = app.listOfStudents();
                 
                 Student stud = new Student();
                 System.Console.WriteLine("Enter student id");
@@ -314,7 +304,7 @@ namespace DBConnectivity
                 DateTime enrollDate = DateTime.Parse(Console.ReadLine());
                 DegreeCourse dc;
                 DiplomaCourse dpc;
-                foreach (Course c in en.listOfCourses())
+                foreach (Course c in app.listOfCourses())
                 {
                     if (cour == (string)c.Id)
                     {
@@ -331,7 +321,7 @@ namespace DBConnectivity
                             dc.IsDegree = c.IsDegree;
                             dc.level = d.level;
                             dc.isPlacementAvailable = d.isPlacementAvailable;
-                            app.enroll(stud, dc, enrollDate);
+                            app.enrollCourse(stud, dc, enrollDate);
 
                         }
                         else
@@ -347,7 +337,7 @@ namespace DBConnectivity
                             dpc.IsDegree = c.IsDegree;
                             dpc.type = d.type;
 
-                            app.enroll(stud, dpc, enrollDate);
+                            app.enrollCourse(stud, dpc, enrollDate);
                         }
                                         
                        }
